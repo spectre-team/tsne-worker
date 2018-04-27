@@ -1,0 +1,133 @@
+{
+    "type": "object",
+    "title": "t-SNE",
+    "required":
+    [
+        "analysis_name",
+        "dataset_name",
+        "n_components",
+        "perplexity",
+        "early_exaggeration",
+        "learning_rate",
+        "n_iter",
+        "n_iter_without_progress",
+        "min_grad_norm",
+        "metric",
+        "init",
+        "random_state",
+        "method",
+        "angle"
+    ],
+    "properties":
+    {
+        "analysis_name":
+        {
+            "title": "Name of the analysis",
+            "type": "string"
+        },
+        "dataset_name":
+        {
+            "title": "Dataset you want to segment",
+            "type": "string"
+        },
+        "n_components":
+        {
+            "title": "Number of final components",
+            "type": "integer",
+            "enum": [2, 3],
+            "default": 2
+        },
+        "perplexity":
+        {
+            "title": "Perplexity",
+            "description": "The perplexity is related to the number of nearest neighbors that is used in other manifold learning algorithms. Larger datasets usually require a larger perplexity. Consider selecting a value between 5 and 50. The choice is not extremely critical since t-SNE is quite insensitive to this parameter.",
+            "type": "number",
+            "minimum": 5,
+            "maximum": 50,
+            "default": 30,
+            "multipleOf": 0.1
+        },
+        "early_exaggeration":
+        {
+            "title": "Early Exaggeration",
+            "description": "Controls how tight natural clusters in the original space are in the embedded space and how much space will be between them. For larger values, the space between natural clusters will be larger in the embedded space. Again, the choice of this parameter is not very critical. If the cost function increases during initial optimization, the early exaggeration factor or the learning rate might be too high.",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 12,
+            "multipleOf": 0.1
+        },
+        "learning_rate":
+        {
+            "title": "Learning Rate",
+            "description": "The learning rate for t-SNE. If the learning rate is too high, the data may look like a 'ball' with any point approximately equidistant from its nearest neighbours. If the learning rate is too low, most points may look compressed in a dense cloud with few outliers. If the cost function gets stuck in a bad local minimum increasing the learning rate may help.",
+            "type": "number",
+            "minimum": 10,
+            "maximum": 1000,
+            "default": 200,
+            "multipleOf": 0.1
+        },
+        "n_iter":
+        {
+            "title": "Number of iterations",
+            "description": "Maximum number of iterations for the optimization.",
+            "type": "integer",
+            "minimum": 250,
+            "maximum": 10000,
+            "default": 1000,
+            "multipleOf": 25
+        },
+        "n_iter_without_progress":
+        {
+            "title": "Number of iterations without improvement before aborting",
+            "description": "Maximum number of iterations without progress before we abort the optimization, used after 250 initial iterations with early exaggeration.",
+            "type": "integer",
+            "minimum": 50,
+            "maximum": 1000,
+            "default": 300,
+            "multipleOf": 50
+        },
+        "min_grad_norm": {
+            "title": "Minimal gradient",
+            "description": "If the gradient norm is below this threshold, the optimization will be stopped.",
+            "type": "number",
+            "minimum": 1e-12,
+            "maximum": 1e-2,
+            "default": 1e-7
+        },
+        "metric":
+        {
+            "title": "Distance metric",
+            "type": "string",
+            "enum": ["correlation", "jaccard", "euclidean", "cosine"],
+            "default": "euclidean"
+        },
+        "init": {
+            "title": "Initialization method",
+            "type": "string",
+            "enum": ["random", "pca"],
+            "default": "random"
+        },
+        "random_state": {
+            "title": "Initialization of random number generator",
+            "type": "number",
+            "default": 0
+        },
+        "method": {
+            "title": "Method of t-SNE",
+            "description": "By default the gradient calculation algorithm uses Barnes-Hut approximation running in O(NlogN) time. method='exact' will run on the slower, but exact, algorithm in O(N^2) time. The exact algorithm should be used when nearest-neighbor errors need to be better than 3%. However, the exact method cannot scale to millions of examples.",
+            "type": "string",
+            "enum": ["barnes_hut", "exact"],
+            "default": "barnes_hut"
+        },
+        "angle": {
+            "title": "Angle",
+            "description": "Only used if method='barnes_hut' This is the trade-off between speed and accuracy for Barnes-Hut T-SNE. 'angle' is the angular size of a distant node as measured from a point. If this size is below 'angle' then it is used as a summary node of all points contained within it. This method is not very sensitive to changes in this parameter in the range of 0.2 - 0.8. Angle less than 0.2 has quickly increasing computation time and angle greater 0.8 has quickly increasing error.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "multipleOf": 0.01,
+            "default": 0.5
+        }
+    }
+}
