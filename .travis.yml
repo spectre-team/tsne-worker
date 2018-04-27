@@ -1,0 +1,54 @@
+language: python
+python:
+- '3.6'
+sudo: required
+services:
+- docker
+env:
+  global:
+  - MAJOR=1
+  - MINOR=0
+  - FIXUP=0
+  - DOCKER_REPO=spectreteam/tsne-worker
+  - secure: Y3CeWKJYM/yUAYM2AYPDegqxxLcldXt0AjKE3uMsSJtg59ui05sAoMf6Qu59ci2TI4qlizxG7Yy2gUEZkkuQEsQNDHRVoZ8rOYzBGGR5ANR/YXggm8sIRZCgoMHcVf/6zOWlq1kMCrC8SBWB89wm0yemEzSp/gfO+M/BIyfVuxkYGdihCeaTaMohVVuo8Iy2LRkAYQgeJLlrVNWXyi6TaZ0Ogp9y+N51jNi1+xNzFoyelxLFwi8b5p2S6tKix/ZOcz0Yoh0LIwgI6yRhN62sI3T+DcT9P1OJZwuPp1rPD708gbjJ1Aj/eZCDz+qG2DBZF2a4RkMl+ZGBl3ySff9bEvbHksLsB0AKKCap25kXQV6AHQZ7eQCGrKl8NTgj63Kr1lVWZDCM1hUqFDaXFcbgSEDeM95ROZTlRhAnwUC5vxoIEMPksZTHxJTrL11+ynGJOdkZzyL+Pb524X30DYgxs9s2VfmBqA961BsYyjFLBF9vaU9zgsOjs1yBnz6YKdoMmepAxGtFZwzrcSXXbNluDc8wwoYRpQ3Mw5Dx/vHgK5NGP1IE9BNqZrB59xKEtLP5a9o1fVSzxAPLAABvdpmqK/9FfWHb0fFH0j2LsiZNqzEISWEodlBP/h50X7JVXUbyq9x9DIFrUAz9BFzm5y6N1nLLajHtDTkgqXEtGvwUWOo=
+  - secure: oUkSw3yDa6wPkapEidlUY4h9fhVQHMFbt1ZA7y7nQ6E+KqbAtnfvvTYH+0G5wNCQZpB8VYhz1xZvyYucwSLJ3irKikw1kBRrZ45PRTT57k7m8EcarthMXGZkfWy7cR42HnyXn4tXrKU2rb2Nea2BJStsNFzJyp2eP+3/QPM/fEjjBUZIhRJ/qNrfhDimycr/65BXNRUYqWDRgwFdYvdoCHOB1jNWQwcxu08bQ0dK4dxi17qlBNEguB0acyEU7nT5xgkTuTwvzHPsYVY2wz3DYjfJ8RrRjqIphns8T849NFLOi1F5xdqFTU3gKr12OBAu9zTcLrjJx1DhGr82qIcUBkd9UAMNWT1WKPdl+YJRoxrKWFQPG8KUNEoO3iR/7az6sQQrErlrLVinHcj7Wyz26Zrl0DIQ/S2yidRQwlvZXfIcNp7T8/+l29ZaDyMUZL9V3RZpibJOFF6tijKJm88CWxRG0Qkdm2xxU5E8YedEekjlr9iCufwvlEqf2VJeGVeUbrkC31l2KplXgEDdeOuGwo+yH7/zQmnW94ducL7Tz9MHiMURY2dIZVJfPTzAaJd4mSzhaKH8n56UdMNELalmZ/u8dbC5eRVYOXGGr+vTpTFAPYpqhXLctYwO8BCLFRzvrubRddxZxpy4vc+VEVpKC5OXRdpbuI5t5noMl5NAILU=
+install:
+- echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+- pip install -r requirements.txt
+script:
+- python -m unittest discover
+- |
+  if [ $TRAVIS_BRANCH = "master" ]; then
+      STAGE=
+  elif [ $TRAVIS_BRANCH = "develop" ]; then
+      STAGE=beta
+  else
+      STAGE=alpha
+  fi
+
+  docker build -t $DOCKER_REPO:latest \
+               -t $DOCKER_REPO:beta \
+               -t $DOCKER_REPO:$MAJOR.$MINOR.$FIXUP${STAGE:+-$STAGE} \
+               -t $DOCKER_REPO:$MAJOR.$MINOR${STAGE:+-$STAGE} \
+               -t $DOCKER_REPO:$MAJOR${STAGE:+-$STAGE} \
+               .
+  docker images
+  if [ $TRAVIS_PULL_REQUEST = "false" ]; then
+      docker push $DOCKER_REPO:$MAJOR.$MINOR.$FIXUP${STAGE:+-$STAGE}
+      docker push $DOCKER_REPO:$MAJOR.$MINOR${STAGE:+-$STAGE}
+      docker push $DOCKER_REPO:$MAJOR${STAGE:+-$STAGE}
+      if [ $TRAVIS_BRANCH = "master" ]; then
+          docker push $DOCKER_REPO:latest
+      elif [ $TRAVIS_BRANCH = "develop" ]; then
+          docker push $DOCKER_REPO:beta
+      fi
+  fi
+notifications:
+  webhooks:
+    urls:
+      secure: r329qzXAiTZYMK/dBoUqbqighoPYF2cIepIa8MFxu9Tk4z2cfZjn/lkf7xFOJlfwLliMqgmEqYateBhAX9lRKfbHAiQmN0RcafzanfVawEgl5l6e+IV2/3NI8wpp2qJYjDFrsBAMRNOnMSr3r+l4jLIB+HGJwobs2RLXf8sz0FV61LayQrWpzoJqwWL6tyq/1l5+C3i5GDdScQZjmaU+2zu0JeqO9dymtsm6cvGWY2lt4rNPfvBttMtjKSmFV/S3bdEjry0wMrD/iSdJxocwDRpvNI+Q2xi/zU0bwr+AwYfTDglIdxXCovDNutvgoB7JOKbY67JcAXekaLN150n/35pDjUwJuKuZAz95vQHGIvS4/iVP8c8sIyuwIZo8AQsCIwuzzX6q3hRtFZG/ZBkSZx1wRkuC8Omv8tZnSfqrnpvoLwWhM0QlpoV6I6ZrsEDfXCUCftuMs2Rac0ZOuLg01rTJPqpePDtyeglrOyOeIVz2yX5Y3coesHR4SSkjBL8nudW0vtSq+QHtBL+s8Itg43hBgigj1CRpoL7kPVwvKWNEjg6x8NnwESEww3kR6Evj5Ve2HHsQ8fkwLwPy778LRZt2nzQ9TzP2VptQQWkOnnB12D/ZhBmh5kn/hQju7xA0lg7M2drGqxEDkD3Pf0guGqFV+zve0sVcwbtEnWykS6I=
+    on_success: always
+    on_failure: always
+    on_start: never
+    on_cancel: never
+    on_error: always
