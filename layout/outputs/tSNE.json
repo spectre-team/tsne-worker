@@ -8,5 +8,16 @@
                 "title": "Load"
             }
         ]
+    },
+    {
+        "aspect": "export",
+        "layout":
+        [
+            "target_name",
+            {
+                "type": "submit",
+                "title": "Export"
+            }
+        ]
     }
 ]
