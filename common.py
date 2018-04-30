@@ -16,5 +16,30 @@ limitations under the License.
 """
 from typing import Tuple
 
+import flask
+
 Response = Tuple[str, int]
 NOT_FOUND = "", 404
+
+
+def require_post_variable(path: str):
+    """Extract variable from Flask JSON request content
+
+    Args:
+        path - (str) dot-separated path to value in JSON query content
+
+
+    Returns:
+        value under the path
+
+    Raises:
+        ValueError, if path does not exist
+    """
+    variables = flask.request.get_json()
+    route = path.split('.')
+    try:
+        for way in route:
+            variables = variables[way]
+    except KeyError as ex:
+        raise ValueError('Unavailable variable: %s' % path) from ex
+    return variables
