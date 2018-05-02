@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from functools import wraps
 from typing import Tuple
 
 import flask
@@ -43,3 +44,29 @@ def require_post_variable(path: str):
     except KeyError as ex:
         raise ValueError('Unavailable variable: %s' % path) from ex
     return variables
+
+
+def with_open(mode='r', buffering=None, encoding=None, errors=None, newline=None, closefd=True):
+    """Decorator for easier wrapping of stream functions to work on files
+
+    For the reference on parameters, check builtins.open
+
+    Example:
+        def foo(file, bar):  # fancy testable function working on stream
+            print(bar)
+            for line in file:
+                print(line)
+
+        foos = with_open(mode='r')(foo)  # function with simple usage
+        foos(file='path/to/some.txt', bar=1)
+    """
+    def wrapper_factory(f):
+        @wraps(f)
+        def with_open_file(file: str, *args, **kwargs):
+            with open(file=file, mode=mode, buffering=buffering,
+                      encoding=encoding, errors=errors, newline=newline,
+                      closefd=closefd) \
+                    as opened_file:
+                return f(file=opened_file, *args, **kwargs)
+        return with_open_file
+    return wrapper_factory
