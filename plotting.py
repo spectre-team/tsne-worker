@@ -139,6 +139,12 @@ class Heatmap(Trace):
             for row in z
         ]
         self.type = 'heatmap'
+        self.showscale = False
+        number_of_labels = np.unique(label).size
+        self.colorscale = [
+            [value, str(color)] for value, color
+            in zip(np.linspace(0, 1, number_of_labels), Color)
+        ]
 
 
 DOUBLE_AXES = {
