@@ -52,7 +52,10 @@ class Trace:
         return repr(self)
 
     def __repr__(self):
-        return repr(self.__dict__).replace('\'', '"')
+        return repr(self.__dict__)\
+            .replace('\'', '"')\
+            .replace('True', 'true')\
+            .replace('False', 'false')
 
 
 class Plot:
@@ -64,7 +67,10 @@ class Plot:
         return repr(self)
 
     def __repr__(self):
-        return repr(self.__dict__).replace('\'', '"')
+        return repr(self.__dict__)\
+            .replace('\'', '"')\
+            .replace('True', 'true')\
+            .replace('False', 'false')
 
 
 ArrayLike = Union[np.ndarray, List[Number], Tuple[Number, ...]]
