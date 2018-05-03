@@ -1,5 +1,20 @@
 [
     {
+        "aspect": "grouping",
+        "layout":
+        [
+            {
+              "type": "help",
+              "helpvalue": "Please select number of clusters"
+            },
+            "number_of_clusters",
+            {
+                "type": "submit",
+                "title": "Group"
+            }
+        ]
+    },
+    {
         "aspect": "visualization",
         "layout":
         [

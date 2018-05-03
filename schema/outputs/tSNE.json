@@ -1,5 +1,28 @@
 [
     {
+        "aspect": "grouping",
+        "friendly_name": "Group analysis",
+        "description": "K-means analysis of groups in the transformed data",
+        "query_format":
+        {
+            "type": "object",
+            "title": "Number of clusters",
+            "properties":
+            {
+                "number_of_clusters":
+                {
+                    "title": "Number of clusters",
+                    "description": "How many groups to find?",
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 20,
+                    "default": 8
+                }
+            }
+        },
+        "output_type": "plot"
+    },
+    {
         "aspect": "visualization",
         "friendly_name": "Visualization",
         "description": "Dataset after transformation",
