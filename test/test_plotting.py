@@ -77,7 +77,7 @@ class Scatter3dTest(unittest.TestCase):
 
 
 class AsScatterPlotTest(unittest.TestCase):
-    def throws_for_data_not_2D_nor_3D(self):
+    def test_throws_for_data_not_2D_nor_3D(self):
         with self.assertRaises(ValueError):
             plt.as_scatter_plot(np.array([]))
         with self.assertRaises(ValueError):
@@ -90,3 +90,13 @@ class AsScatterPlotTest(unittest.TestCase):
     def test_selects_scatter3d_for_3d_data(self):
         plot = plt.as_scatter_plot(np.array([[1, 2, 3], [4, 5, 6]]))
         self.assertIsInstance(plot.data[0], plt.Scatter3d)
+
+    def test_throws_for_labels_size_mismatch(self):
+        with self.assertRaises(ValueError):
+            plt.as_scatter_plot(observations=np.array([[1, 2], [3, 4]]),
+                                labels=np.array([5]))
+
+    def test_creates_trace_for_each_label(self):
+        plot = plt.as_scatter_plot(observations=np.array([[1, 2], [3, 4]]),
+                                   labels=np.array([5, 6]))
+        self.assertEqual(len(plot.data), 2)

@@ -68,12 +68,23 @@ class Scatter3d(Trace):
         self.marker = {"size": 2}
 
 
-def as_scatter_plot(observations: np.ndarray) -> Plot:
-    dimensions = observations.shape[1]
+def as_scatter_plot(observations: np.ndarray, labels: np.ndarray=None) -> Plot:
+    dimensions = observations.shape[1] if len(observations.shape) > 1 else 0
     if dimensions == 2:
         trace = Scatter2d
     elif dimensions == 3:
         trace = Scatter3d
     else:
         raise ValueError("Supports only 2D and 3D data. Was: %i" % dimensions)
-    return Plot([trace(*observations.T)])
+    if labels is None:
+        traces = [trace(*observations.T)]
+    elif labels.size == observations.shape[0]:
+        traces = [
+            trace(*observations[labels == label].T)
+            for label in np.unique(labels)
+        ]
+    else:
+        raise ValueError("Labels must correspond to all observations. Found "
+                         "%i labels and %i observations"
+                         % (labels.size, observations.shape[0]))
+    return Plot(traces)
