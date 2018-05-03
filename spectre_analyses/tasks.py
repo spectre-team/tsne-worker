@@ -24,6 +24,7 @@ from sklearn.externals import joblib
 from spdata.reader import load_dataset
 
 import data_utils
+import grouping
 from spectre_analyses.celery import app
 from spectre_analyses.helpers import open_analysis, status_notifier, dump_configuration
 
@@ -53,3 +54,8 @@ def tSNE(self, analysis_name: str, dataset_name: str, **kwargs):
         normalized = data_utils.as_normalized(result, data.coordinates, data.labels)
         dataset_path = os.path.join(tmp_path, 'data.txt')
         data_utils.dumps_txt(dataset_path, normalized)
+        notify('RUNNING GROUPING')
+        grouped = grouping.sweep_kmeans(result)
+        notify('PRESERVING GROUPING')
+        grouped_path = os.path.join(tmp_path, 'grouped')
+        joblib.dump(grouped, grouped_path + '.pkl')
