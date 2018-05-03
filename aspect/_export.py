@@ -70,7 +70,7 @@ def ensure_dataset(root: str) -> str:
 
 
 EMPTY_TABLE = repr({"columns": [], "data": []}).replace('\'', '"'), 200
-MISSING_TARGET_NAME = 'Missing parameter: target_name', 400
+MISSING_TARGET_NAME = '{"missing_parameter": "target_name"}', 400
 
 
 def export(analysis_id: str) -> common.Response:
