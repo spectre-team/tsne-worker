@@ -58,10 +58,15 @@ class Trace:
             .replace('False', 'false')
 
 
+DEFAULT_LAYOUT = {
+    'margin': {'l': 0, 'r': 0, 'b': 0}
+}
+
+
 class Plot:
     def __init__(self, data: List[Trace], layout: Dict=None):
         self.data = data
-        self.layout = layout or {}
+        self.layout = layout or DEFAULT_LAYOUT
 
     def __str__(self):
         return repr(self)
