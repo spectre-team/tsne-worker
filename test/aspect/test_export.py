@@ -4,19 +4,10 @@ import os
 
 import numpy as np
 import numpy.testing as npt
-from spdata.common import DATA_ROOT
 import spdata.types as ty
 
 import aspect._export as ex
-
-
-class DatasetNameTest(unittest.TestCase):
-    def test_extracts_dataset_name(self):
-        name = 'some-dataset'
-        analysis_root = os.path.join(DATA_ROOT, name, 'tSNE', 'blah')
-        found = ex.dataset_name(analysis_root)
-        self.assertEqual(name, found)
-
+import common
 
 SPECTRA = [[4]]
 COORDINATES = ty.Coordinates([1], [2], [3])
@@ -33,24 +24,13 @@ def throws(exception):
     return MagicMock(side_effect=exception)
 
 
-@patch.object(ex, ex.dataset_name.__name__, new=returns('data'))
-@patch.object(ex, ex.load_dataset.__name__, new=returns(DATASET))
-class GetMetadataTest(unittest.TestCase):
-    def test_loads_coordinates_and_labels_of_analysed_dataset(self):
-        metadata = ex.get_metadata('blah')
-        self.assertSequenceEqual(metadata.labels, LABELS)
-        self.assertSequenceEqual(metadata.coordinates.x, COORDINATES.x)
-        self.assertSequenceEqual(metadata.coordinates.y, COORDINATES.y)
-        self.assertSequenceEqual(metadata.coordinates.z, COORDINATES.z)
-
-
 TRANSFORMED_DATASET = np.array([[1, 2]])
-METADATA = ex.Metadata(COORDINATES, LABELS)
+METADATA = common.Metadata(COORDINATES, LABELS)
 
 
 @patch('data_utils.dumps_txt')
 @patch.object(ex.joblib, ex.joblib.load.__name__, new=returns(TRANSFORMED_DATASET))
-@patch.object(ex, ex.get_metadata.__name__, new=returns(METADATA))
+@patch.object(ex, common.get_metadata.__name__, new=returns(METADATA))
 class RegenerateDatasetTest(unittest.TestCase):
     def test_exports_transformed_dataset(self, mock_dumps: MagicMock):
         ex.regenerate_dataset('blah.txt', 'analysis-root')

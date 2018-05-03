@@ -15,11 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import contextlib
+import os
 from functools import wraps
 import sys
-from typing import Tuple
+from typing import Tuple, NamedTuple, Optional
 
 import flask
+import numpy as np
+from spdata import types as ty
+from spdata.reader import load_dataset
 from tqdm import tqdm
 
 Response = Tuple[str, int]
@@ -110,3 +114,22 @@ def std_out_err_redirect_tqdm():
     # Always restore sys.stdout/err if necessary
     finally:
         sys.stdout, sys.stderr = orig_out_err
+
+
+Metadata = NamedTuple('Metadata', [
+    ('coordinates', ty.Coordinates),
+    ('labels', Optional[np.ndarray])
+])
+
+
+def dataset_name(root: str) -> str:
+    """Find name of analyzed dataset"""
+    split = os.path.split
+    return split(split(split(root)[0])[0])[1]
+
+
+def get_metadata(root: str) -> Metadata:
+    """Get metadata of analyzed dataset"""
+    name = dataset_name(root)
+    dataset = load_dataset(name)
+    return Metadata(coordinates=dataset.coordinates, labels=dataset.labels)
