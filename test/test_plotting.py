@@ -100,3 +100,15 @@ class AsScatterPlotTest(unittest.TestCase):
         plot = plt.as_scatter_plot(observations=np.array([[1, 2], [3, 4]]),
                                    labels=np.array([5, 6]))
         self.assertEqual(len(plot.data), 2)
+
+
+class HeatmapTest(unittest.TestCase):
+    def setUp(self):
+        self.heatmap = plt.Heatmap(x=[1, 2], y=[2, 1], label=[1, 2])
+
+    def test_translates_labels_onto_grid(self):
+        self.assertEqual(self.heatmap.z[1][0], 1)
+        self.assertEqual(self.heatmap.z[0][1], 2)
+
+    def test_has_proper_type(self):
+        self.assertEqual('heatmap', self.heatmap.type)

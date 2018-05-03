@@ -88,3 +88,16 @@ def as_scatter_plot(observations: np.ndarray, labels: np.ndarray=None) -> Plot:
                          "%i labels and %i observations"
                          % (labels.size, observations.shape[0]))
     return Plot(traces)
+
+
+class Heatmap(Trace):
+    def __init__(self, x: ArrayLike, y: ArrayLike, label: ArrayLike):
+        x, y = np.array(x), np.array(y)
+        x, y = x - np.min(x), y - np.min(y)
+        z = np.nan * np.zeros((np.max(y) + 1, np.max(x) + 1))
+        z[y, x] = label
+        self.z = [
+            [item if not np.isnan(item) else "nan" for item in row]
+            for row in z
+        ]
+        self.type = 'heatmap'
