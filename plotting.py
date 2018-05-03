@@ -118,8 +118,8 @@ def as_scatter_plot(observations: np.ndarray, labels: np.ndarray=None) -> Plot:
         traces = [trace(*observations.T)]
     elif labels.size == observations.shape[0]:
         traces = [
-            trace(*observations[labels == label].T)
-            for label in np.unique(labels)
+            trace(*observations[labels == label].T, color=color)
+            for label, color in zip(np.unique(labels), Color)
         ]
     else:
         raise ValueError("Labels must correspond to all observations. Found "
