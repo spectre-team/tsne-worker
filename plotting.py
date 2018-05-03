@@ -14,10 +14,37 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from enum import Enum
 from numbers import Number
 from typing import Dict, List, Tuple, Union
 
 import numpy as np
+
+
+class Color(str, Enum):
+    def __str__(self):
+        return self.value
+
+    Red = '#e6194b'
+    Green = '#3cb44b'
+    Yellow = '#ffe119'
+    Blue = '#0082c8'
+    Orange = '#f58231'
+    Purple = '#911eb4'
+    Cyan = '#46f0f0'
+    Magenta = '#f032e6'
+    Lime = '#d2f53c'
+    Pink = '#fabebe'
+    Teal = '#008080'
+    Lavender = '#e6beff'
+    Brown = '#aa6e28'
+    Beige = '#fffac8'
+    Maroon = '#800000'
+    Mint = '#aaffc3'
+    Olive = '#808000'
+    Coral = '#ffd8b1'
+    Navy = '#000080'
+    Grey = '#808080'
 
 
 class Trace:
