@@ -16,7 +16,7 @@ limitations under the License.
 """
 import contextlib
 import os
-from functools import wraps
+from functools import lru_cache, wraps
 import sys
 from typing import Tuple, NamedTuple, Optional
 
@@ -128,6 +128,7 @@ def dataset_name(root: str) -> str:
     return split(split(split(root)[0])[0])[1]
 
 
+@lru_cache()
 def get_metadata(root: str) -> Metadata:
     """Get metadata of analyzed dataset"""
     name = dataset_name(root)
