@@ -77,7 +77,7 @@ ArrayLike = Union[np.ndarray, List[Number], Tuple[Number, ...]]
 
 
 class Scatter2d(Trace):
-    def __init__(self, x: ArrayLike, y: ArrayLike):
+    def __init__(self, x: ArrayLike, y: ArrayLike, color: Color=None):
         if len(x) != len(y):
             raise ValueError("len(x) != len(y); %i != %i" % (len(x), len(y)))
         self.x = list(x if not isinstance(x, np.ndarray) else x.ravel())
@@ -85,10 +85,13 @@ class Scatter2d(Trace):
         self.mode = 'markers'
         self.type = 'scatter'
         self.marker = {"size": 2}
+        if color is not None:
+            self.marker['color'] = str(color)
 
 
 class Scatter3d(Trace):
-    def __init__(self, x: ArrayLike, y: ArrayLike, z: ArrayLike):
+    def __init__(self, x: ArrayLike, y: ArrayLike, z: ArrayLike,
+                 color: Color=None):
         if len(x) != len(y):
             raise ValueError("len(x) != len(y); %i != %i" % (len(x), len(y)))
         if len(x) != len(z):
@@ -99,6 +102,8 @@ class Scatter3d(Trace):
         self.mode = 'markers'
         self.type = 'scatter3d'
         self.marker = {"size": 2}
+        if color is not None:
+            self.marker['color'] = str(color)
 
 
 def as_scatter_plot(observations: np.ndarray, labels: np.ndarray=None) -> Plot:
