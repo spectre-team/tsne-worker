@@ -20,7 +20,7 @@ from typing import Tuple
 import flask
 
 Response = Tuple[str, int]
-NOT_FOUND = "", 404
+NOT_FOUND = '{"unknown": "analysis_id"}', 404
 
 
 def require_post_variable(path: str):
