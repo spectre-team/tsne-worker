@@ -27,6 +27,7 @@ import data_utils
 import grouping
 from spectre_analyses.celery import app
 from spectre_analyses.helpers import open_analysis, status_notifier, dump_configuration
+import spectre_analyses.tsne_components as tsne
 
 
 @app.task(task_track_started=True, ignore_result=True, bind=True,
@@ -35,6 +36,7 @@ def tSNE(self, analysis_name: str, dataset_name: str, **kwargs):
     # preprocessing of our current strange format
     analysis_details = dataset_name, tSNE.__name__, analysis_name
     manifold = TSNE(**kwargs, verbose=True)
+    paths = tsne.Artifacts
 
     with status_notifier(self) as notify, \
             open_analysis(*analysis_details) as tmp_path:
@@ -46,16 +48,17 @@ def tSNE(self, analysis_name: str, dataset_name: str, **kwargs):
         notify('RUNNING T-SNE')
         result = manifold.fit_transform(data.spectra)
         notify('PRESERVING RESULTS')
-        model_path = os.path.join(tmp_path, 'model')
-        joblib.dump(manifold, model_path + '.pkl')
-        result_path = os.path.join(tmp_path, 'result')
-        joblib.dump(result, result_path + '.pkl')
-        np.savetxt(result_path + '.csv', result)
+        model_path = os.path.join(tmp_path, paths.manifold_pickle)
+        joblib.dump(manifold, model_path)
+        result_path = os.path.join(tmp_path, paths.transformed_pickle)
+        joblib.dump(result, result_path)
+        result_path = os.path.join(tmp_path, paths.transformed_csv)
+        np.savetxt(result_path, result)
         normalized = data_utils.as_normalized(result, data.coordinates, data.labels)
-        dataset_path = os.path.join(tmp_path, 'data.txt')
+        dataset_path = os.path.join(tmp_path, paths.transformed_txt)
         data_utils.dumps_txt(dataset_path, normalized)
         notify('RUNNING GROUPING')
         grouped = grouping.sweep_kmeans(result)
         notify('PRESERVING GROUPING')
-        grouped_path = os.path.join(tmp_path, 'grouped')
-        joblib.dump(grouped, grouped_path + '.pkl')
+        grouped_path = os.path.join(tmp_path, paths.grouped_pickle)
+        joblib.dump(grouped, grouped_path)
