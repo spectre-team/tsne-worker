@@ -31,4 +31,4 @@ class VisualizationTest(unittest.TestCase):
     def test_returns_valid_response_for_known_id(self):
         visualization, status_code = vis.visualization('some_id')
         self.assertEqual(404, status_code)
-        self.assertEqual('', visualization)
+        json.loads(visualization)  # check, if doesn't fail

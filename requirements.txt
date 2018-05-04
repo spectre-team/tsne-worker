@@ -6,3 +6,4 @@ scikit-learn==0.19.1
 scipy==1.0.1
 -e git+https://github.com/spectre-team/spectre-data.git@09af6f5c595bc08a170bf5ec2946fa60bf6a2ef9#egg=spectre_data
 SQLAlchemy==1.2.7
+tqdm==4.23.1

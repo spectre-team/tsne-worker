@@ -16,39 +16,15 @@ limitations under the License.
 """
 from functools import partial
 import os
-from typing import NamedTuple, Optional
 
-import numpy as np
 from sklearn.externals import joblib
-
-from spdata.reader import load_dataset
-import spdata.types as ty
 
 import common
 import data_utils
 import discover.analyses as da
-
+from common import get_metadata
 
 find_root = partial(da.find_analysis_by_id, 'tSNE')
-
-
-Metadata = NamedTuple('Metadata', [
-    ('coordinates', ty.Coordinates),
-    ('labels', Optional[np.ndarray])
-])
-
-
-def dataset_name(root: str) -> str:
-    """Find name of analyzed dataset"""
-    split = os.path.split
-    return split(split(split(root)[0])[0])[1]
-
-
-def get_metadata(root: str) -> Metadata:
-    """Get metadata of analyzed dataset"""
-    name = dataset_name(root)
-    dataset = load_dataset(name)
-    return Metadata(coordinates=dataset.coordinates, labels=dataset.labels)
 
 
 def regenerate_dataset(dataset_path: str, analysis_root: str):
@@ -70,7 +46,7 @@ def ensure_dataset(root: str) -> str:
 
 
 EMPTY_TABLE = repr({"columns": [], "data": []}).replace('\'', '"'), 200
-MISSING_TARGET_NAME = 'Missing parameter: target_name', 400
+MISSING_TARGET_NAME = '{"missing_parameter": "target_name"}', 400
 
 
 def export(analysis_id: str) -> common.Response:
