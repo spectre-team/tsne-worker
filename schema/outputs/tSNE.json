@@ -1,5 +1,17 @@
 [
     {
+        "aspect": "clustering_score",
+        "friendly_name": "Estimate number of groups",
+        "description": "Quality indices for different number of groups",
+        "query_format":
+        {
+            "title": "dummy",
+            "type": "boolean",
+            "default": false
+        },
+        "output_type": "plot"
+    },
+    {
         "aspect": "grouping",
         "friendly_name": "Group analysis",
         "description": "K-means analysis of groups in the transformed data",
