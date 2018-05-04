@@ -112,3 +112,36 @@ class HeatmapTest(unittest.TestCase):
 
     def test_has_proper_type(self):
         self.assertEqual('heatmap', self.heatmap.type)
+
+
+class ComposeTest(unittest.TestCase):
+    def setUp(self):
+        self.heatmap = plt.Heatmap(x=[1, 2], y=[2, 1], label=[1, 2])
+        self.scatter = plt.Scatter3d([1], np.array([[2]]), [3])
+        self.left_plot = plt.Plot([self.scatter])
+        self.right_plot = plt.Plot([self.heatmap])
+
+    def test_marks_second_plot_with_axis_metadata(self):
+        plt.compose(self.left_plot, self.right_plot)
+        self.assertTrue(hasattr(self.right_plot.data[0], 'xaxis'))
+        self.assertEqual(self.right_plot.data[0].xaxis, 'x2')
+        self.assertTrue(hasattr(self.right_plot.data[0], 'yaxis'))
+        self.assertEqual(self.right_plot.data[0].yaxis, 'y2')
+
+    def test_resulting_plot_has_both_traces(self):
+        composed = plt.compose(self.left_plot, self.right_plot)
+        self.assertEqual(len(composed.data),
+                         len(self.left_plot.data) + len(self.right_plot.data))
+
+    def test_resulting_plot_has_information_about_second_axes(self):
+        composed = plt.compose(self.left_plot, self.right_plot)
+        self.assertIn('xaxis', composed.layout)
+        self.assertIn('yaxis2', composed.layout)
+        self.assertIn('xaxis2', composed.layout)
+
+    def test_resulting_plot_is_interpretable_json(self):
+        composed = plt.compose(self.left_plot, self.right_plot)
+        try:
+            json.loads(str(composed))  # check if doesn't fail
+        except json.decoder.JSONDecodeError as ex:
+            raise AssertionError(str(composed)) from ex

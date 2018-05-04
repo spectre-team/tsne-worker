@@ -101,3 +101,25 @@ class Heatmap(Trace):
             for row in z
         ]
         self.type = 'heatmap'
+
+
+DOUBLE_AXES = {
+    'showlegend': True,
+    'legend': {'orientation': 'h'},
+    'xaxis': {'domain': [0, 0.45]},
+    'yaxis2': {'anchor': 'x2'},
+    'xaxis2': {'domain': [0.55, 1]},
+    'scene1': {'domain': {'x': [0, 0.45], 'y': [0, 1]}},
+    'scene2': {'domain': {'x': [0.55, 1], 'y': [0, 1]}},
+}
+
+
+def compose(first: Plot, second: Plot):
+    for trace in first.data:
+        trace.scene = 'scene1'
+    for trace in second.data:
+        trace.xaxis = 'x2'
+        trace.yaxis = 'y2'
+        trace.scene = 'scene2'
+    return Plot(data=first.data + second.data,
+                layout={**first.layout, **second.layout, **DOUBLE_AXES})
