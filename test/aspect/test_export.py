@@ -8,20 +8,13 @@ import spdata.types as ty
 
 import aspect._export as ex
 import common
+from test_helpers import returns, throws
 
 SPECTRA = [[4]]
 COORDINATES = ty.Coordinates([1], [2], [3])
 MZ = [5]
 LABELS = [6]
 DATASET = ty.Dataset(SPECTRA, COORDINATES, MZ, LABELS)
-
-
-def returns(value):
-    return MagicMock(return_value=value)
-
-
-def throws(exception):
-    return MagicMock(side_effect=exception)
 
 
 TRANSFORMED_DATASET = np.array([[1, 2]])

@@ -3,10 +3,7 @@ from unittest.mock import MagicMock, patch
 
 
 import aspect._clustering_score as cs
-
-
-def returns(value):
-    return MagicMock(return_value=value)
+from test_helpers import returns
 
 
 @patch.object(cs.joblib, cs.joblib.load.__name__)
