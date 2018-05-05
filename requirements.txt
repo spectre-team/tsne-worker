@@ -1,0 +1,8 @@
+celery==4.1.0
+Flask==1.0
+numpy==1.14.2
+psycopg2==2.7.4
+scikit-learn==0.19.1
+scipy==1.0.1
+-e git+https://github.com/spectre-team/spectre-data.git@29ffa946d6dd41b4ae6be7c2dead56f0a8c94251#egg=spectre_data
+SQLAlchemy==1.2.7
