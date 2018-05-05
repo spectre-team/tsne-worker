@@ -145,3 +145,9 @@ class ComposeTest(unittest.TestCase):
             json.loads(str(composed))  # check if doesn't fail
         except json.decoder.JSONDecodeError as ex:
             raise AssertionError(str(composed)) from ex
+
+
+class LineTest(unittest.TestCase):
+    def test_line_plot_has_line_mode_enabled(self):
+        plot = plt.Line(x=[1], y=[2])
+        self.assertIn('lines', plot.mode)

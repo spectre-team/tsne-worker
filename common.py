@@ -53,7 +53,7 @@ def require_post_variable(path: str):
     return variables
 
 
-def with_open(mode='r', buffering=None, encoding=None, errors=None, newline=None, closefd=True):
+def with_open(*decorator_args, **decorator_kwargs):
     """Decorator for easier wrapping of stream functions to work on files
 
     For the reference on parameters, check builtins.open
@@ -70,11 +70,9 @@ def with_open(mode='r', buffering=None, encoding=None, errors=None, newline=None
     def wrapper_factory(f):
         @wraps(f)
         def with_open_file(file: str, *args, **kwargs):
-            with open(file=file, mode=mode, buffering=buffering,
-                      encoding=encoding, errors=errors, newline=newline,
-                      closefd=closefd) \
+            with open(file, *decorator_args, **decorator_kwargs) \
                     as opened_file:
-                return f(file=opened_file, *args, **kwargs)
+                return f(opened_file, *args, **kwargs)
         return with_open_file
     return wrapper_factory
 

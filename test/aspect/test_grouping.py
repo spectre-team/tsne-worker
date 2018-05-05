@@ -1,33 +1,13 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-import json
-
 import numpy as np
 from spdata.types import Coordinates
 
 import common as cmn
 import plotting as plt
 import aspect._grouping as grp
-
-
-def returns(value):
-    return MagicMock(return_value=value)
-
-
-def many(values):
-    return MagicMock(side_effect=values)
-
-
-def throws(exception):
-    return MagicMock(side_effect=exception)
-
-
-def assert_valid_json(text: str):
-    try:
-        json.loads(text)
-    except json.JSONDecodeError as ex:
-        raise AssertionError(text) from ex
+from test_helpers import returns, many, throws, assert_valid_json
 
 
 @patch.object(grp, grp.sweep_kmeans.__name__, new=MagicMock())
@@ -63,7 +43,7 @@ grouped_mock.labels = np.array([1, 1])
 @patch.object(grp, 'find_root', new=returns('analysis-root'))
 @patch('common.require_post_variable', new=returns(2))
 @patch.object(grp.joblib, grp.joblib.load.__name__,
-              new=many([MagicMock(), 19*[grouped_mock]]))
+              new=many([MagicMock(), 19 * [grouped_mock]]))
 class GroupingTest(unittest.TestCase):
     def test_returns_404_for_unknown_analysis(self):
         with patch.object(grp, 'find_root', new=throws(ValueError)):

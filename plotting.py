@@ -172,3 +172,9 @@ def compose(first: Plot, second: Plot):
         trace.scene = 'scene2'
     return Plot(data=first.data + second.data,
                 layout={**first.layout, **second.layout, **DOUBLE_AXES})
+
+
+class Line(Scatter2d):
+    def __init__(self, x: ArrayLike, y: ArrayLike, color: Color=None):
+        super(Line, self).__init__(x=x, y=y, color=color)
+        self.mode = 'lines+markers'

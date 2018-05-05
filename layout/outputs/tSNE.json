@@ -1,5 +1,15 @@
 [
     {
+        "aspect": "clustering_score",
+        "layout":
+        [
+            {
+                "type": "submit",
+                "title": "Estimate"
+            }
+        ]
+    },
+    {
         "aspect": "grouping",
         "layout":
         [
