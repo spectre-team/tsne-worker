@@ -16,7 +16,7 @@ limitations under the License.
 """
 import json
 from numbers import Number
-from typing import Dict, List, Tuple, Union
+from typing import Collection, Dict, List
 
 import numpy as np
 
@@ -48,7 +48,7 @@ class Plot:
     __repr__ = to_json
 
 
-ArrayLike = Union[np.ndarray, List[Number], Tuple[Number, ...]]
+ArrayLike = Collection[Number]
 
 
 class Scatter2d(Trace):
