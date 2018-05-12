@@ -14,18 +14,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import json
 from numbers import Number
 from typing import Dict, List, Tuple, Union
 
 import numpy as np
 
 
-class Trace:
-    def __str__(self):
-        return repr(self)
+def _by_dict(object_):
+    return object_.__dict__
 
-    def __repr__(self):
-        return repr(self.__dict__).replace('\'', '"')
+
+_SERIALIZER_OPTIONS = {"default": _by_dict, "sort_keys": True}
+
+
+class Trace:
+    def to_json(self):
+        return json.dumps(self, **_SERIALIZER_OPTIONS)
+
+    __str__ = to_json
+    __repr__ = to_json
 
 
 class Plot:
@@ -33,11 +41,11 @@ class Plot:
         self.data = data
         self.layout = layout or {}
 
-    def __str__(self):
-        return repr(self)
+    def to_json(self):
+        return json.dumps(self, **_SERIALIZER_OPTIONS)
 
-    def __repr__(self):
-        return repr(self.__dict__).replace('\'', '"')
+    __str__ = to_json
+    __repr__ = to_json
 
 
 ArrayLike = Union[np.ndarray, List[Number], Tuple[Number, ...]]
