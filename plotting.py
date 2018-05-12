@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from abc import ABCMeta, abstractmethod
 import json
 from numbers import Number
 from typing import Collection, Dict, List
@@ -28,7 +29,11 @@ def _by_dict(object_):
 _SERIALIZER_OPTIONS = {"default": _by_dict, "sort_keys": True}
 
 
-class Trace:
+class Trace(metaclass=ABCMeta):
+    @abstractmethod
+    def __init__(self):
+        raise NotImplementedError(Trace.__name__ + ' is abstract')
+
     def to_json(self):
         return json.dumps(self, **_SERIALIZER_OPTIONS)
 
