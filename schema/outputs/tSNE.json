@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "aspect": "visualization",
+        "friendly_name": "Visualization",
+        "description": "Dataset after transformation",
+        "query_format":
+        {
+            "title": "dummy",
+            "type": "boolean",
+            "default": false
+        },
+        "output_type": "plot"
+    }
+]

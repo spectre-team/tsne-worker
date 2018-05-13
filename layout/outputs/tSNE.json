@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "aspect": "visualization",
+        "layout":
+        [
+            {
+                "type": "submit",
+                "title": "Load"
+            }
+        ]
+    }
+]
