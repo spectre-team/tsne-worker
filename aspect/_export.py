@@ -77,10 +77,10 @@ def export(analysis_id: str) -> common.Response:
     """Export transformed dataset to a common data store
 
     Arguments:
-        analysis_id - (str) ID of transform to use
+        analysis_id (str): ID of transform to use
 
     Implicit arguments (should be provided in JSON request):
-        target_name - (str) name of the dataset created in common data store
+        target_name (str): name of the dataset created in common data store
     """
     try:
         analysis_root = find_root(analysis_id)
