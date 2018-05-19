@@ -39,6 +39,8 @@ class Trace(metaclass=ABCMeta):
 
     __str__ = to_json
     __repr__ = to_json
+    __json__ = to_json
+    for_json = to_json
 
 
 class Plot:
@@ -51,6 +53,8 @@ class Plot:
 
     __str__ = to_json
     __repr__ = to_json
+    __json__ = to_json
+    for_json = to_json
 
 
 ArrayLike = Collection[Number]
