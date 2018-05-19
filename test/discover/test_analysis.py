@@ -18,6 +18,8 @@ import unittest
 from unittest.mock import create_autospec, MagicMock, patch
 import os
 
+from flask_json import JsonError
+
 import discover.analyses as an
 
 
@@ -145,3 +147,7 @@ class TestFindAnalysisById(unittest.TestCase):
         sample_id = an.analysis_id(sample_path)
         resolved = an.find_analysis_by_id('tSNE', sample_id)
         self.assertEqual(sample_path, resolved)
+
+    def test_throws_for_unknown_id(self):
+        with self.assertRaises(JsonError):
+            an.find_analysis_by_id('tSNE', 'nonexistent')
