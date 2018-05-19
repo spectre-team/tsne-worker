@@ -47,7 +47,7 @@ dummy_dataset_recognition = MagicMock(side_effect=lambda name: name in DUMMY_DAT
 class TestSchema(unittest.TestCase):
     @patch.object(api, 'unchanged_file')
     def test_passes_json_without_replacements(self, reader):
-        schema = api.schema("inputs", "tSNE")
+        schema, _ = api.schema("inputs", "tSNE")
         self.assertIs(schema, reader.return_value)
 
 
@@ -63,7 +63,7 @@ class TestSchemaIntegration(unittest.TestCase):
 class TestLayout(unittest.TestCase):
     @patch.object(api, 'file_with_datasets_substitution')
     def test_enumerates_available_datasets(self, reader):
-        layout = api.layout("inputs", "tSNE")
+        layout, _ = api.layout("inputs", "tSNE")
         self.assertIs(layout, reader.return_value)
 
 

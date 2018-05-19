@@ -17,7 +17,7 @@ limitations under the License.
 import os
 
 import flask
-from flask_json import as_json, FlaskJSON, JsonError
+from flask_json import json_response, FlaskJSON, JsonError
 
 import aspect
 from discover import file_with_datasets_substitution, unchanged_file, find_analysis_results
@@ -29,41 +29,38 @@ app.config['JSON_USE_ENCODE_METHODS'] = True
 
 
 @app.route('/schema/<string:endpoint>/<string:task_name>/')
-@as_json
 def schema(endpoint: str, task_name: str):
     """Get static schema description"""
     path = os.path.join('.', 'schema', endpoint, task_name + '.json')
     try:
-        return unchanged_file(path)
+        return unchanged_file(path), 200
     except FileNotFoundError:
         raise JsonError(description='Unknown task: ' + task_name, status_=404)
 
 
 @app.route('/layout/<string:endpoint>/<string:task_name>/')
-@as_json
 def layout(endpoint: str, task_name: str):
     """Get dynamic layout description"""
     path = os.path.join('.', 'layout', endpoint, task_name + '.json')
     try:
-        return file_with_datasets_substitution(path)
+        return file_with_datasets_substitution(path), 200
     except FileNotFoundError:
         raise JsonError(description='Unknown task: ' + task_name, status_=404)
 
 
 
 @app.route('/results/<string:task_name>/')
-@as_json
 def results(task_name: str):
     "Get list of available results"
-    return [result._asdict() for result in find_analysis_results(task_name)]
+    return json_response([result._asdict() for result in
+                          find_analysis_results(task_name)])
 
 
 @app.route('/results/<string:task_name>/<string:analysis_id>/<string:aspect_name>/', methods=['POST'])
-@as_json
 def analysis_aspect(task_name: str, analysis_id: str, aspect_name: str):
     "Get aspect result"
     try:
         aspect_builder = getattr(aspect, aspect_name)
     except AttributeError:
         raise JsonError(description="Unknown aspect: " + aspect_name, status_=404)
-    return aspect_builder(analysis_id)
+    return json_response(aspect_builder(analysis_id))
