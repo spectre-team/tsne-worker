@@ -15,12 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from functools import wraps
-from typing import Tuple
 
 import flask
+from flask_json import JsonError
 
-Response = Tuple[str, int]
-NOT_FOUND = "", 404
+
+def unknown_analysis_id(analysis_type, analysis_id):
+    return JsonError(description="Unknown id of {0} analysis: {1}".format(
+        analysis_type, analysis_id), status_=404)
 
 
 def require_post_variable(path: str):
@@ -42,7 +44,8 @@ def require_post_variable(path: str):
         for way in route:
             variables = variables[way]
     except KeyError as ex:
-        raise ValueError('Unavailable variable: %s' % path) from ex
+        raise JsonError(description='Missing parameter: %s' % path,
+                        status_=400) from ex
     return variables
 
 

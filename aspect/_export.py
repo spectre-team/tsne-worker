@@ -69,11 +69,10 @@ def ensure_dataset(root: str) -> str:
     return dataset_path
 
 
-EMPTY_TABLE = repr({"columns": [], "data": []}).replace('\'', '"'), 200
-MISSING_TARGET_NAME = 'Missing parameter: target_name', 400
+EMPTY_TABLE = {"columns": [], "data": []}
 
 
-def export(analysis_id: str) -> common.Response:
+def export(analysis_id: str):
     """Export transformed dataset to a common data store
 
     Arguments:
@@ -82,14 +81,8 @@ def export(analysis_id: str) -> common.Response:
     Implicit arguments (should be provided in JSON request):
         target_name (str): name of the dataset created in common data store
     """
-    try:
-        analysis_root = find_root(analysis_id)
-    except ValueError:  # unknown ID
-        return common.NOT_FOUND
-    try:
-        target_name = common.require_post_variable('target_name')
-    except ValueError:  # missing target_name
-        return MISSING_TARGET_NAME
+    analysis_root = find_root(analysis_id)
+    target_name = common.require_post_variable('target_name')
     dataset_path = ensure_dataset(analysis_root)
     data_utils.push_to_repo(dataset_path, target_name)
     return EMPTY_TABLE

@@ -23,6 +23,8 @@ from typing import List, NamedTuple
 from spdata.discover import as_readable, get_datasets
 from spdata.common import DATA_ROOT
 
+import common
+
 
 only_existing = partial(filter, os.path.exists)
 only_folders = partial(filter, os.path.isdir)
@@ -82,4 +84,4 @@ def find_analysis_by_id(analysis_type: str, some_id: str) -> Path:
     for analysis in find_all_analyses_paths(analysis_type):
         if analysis_id(analysis) == some_id:
             return analysis
-    raise ValueError("Unknown id of {0} analysis: {1}".format(analysis_type, some_id))
+    raise common.unknown_analysis_id(analysis_type, some_id)

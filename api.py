@@ -15,18 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import os
+from typing import Tuple
 
 import flask
 from flask_json import as_json, FlaskJSON, JsonError
 
 import aspect
-from common import Response
 from discover import file_with_datasets_substitution, unchanged_file, find_analysis_results
 
 app = flask.Flask(__name__)
 json = FlaskJSON(app)
 app.config['JSON_ADD_STATUS'] = False
 app.config['JSON_USE_ENCODE_METHODS'] = True
+
+Response = Tuple[str, int]
 
 
 @app.route('/schema/<string:endpoint>/<string:task_name>/')
