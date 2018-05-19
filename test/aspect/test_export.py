@@ -83,22 +83,11 @@ class EnsureDatasetTest(unittest.TestCase):
 @patch.object(ex, ex.ensure_dataset.__name__, new=returns('data.txt'))
 @patch('data_utils.push_to_repo')
 class ExportTest(unittest.TestCase):
-    def test_signalizes_nonexistent_analysis_by_404(self, mock_push: MagicMock):
-        with patch.object(ex, 'find_root', new=throws(ValueError)):
-            response, status = ex.export('blah')
-        self.assertEqual(status, 404)
-
-    def test_signalizes_missing_JSON_parameters_by_400(self, mock_push: MagicMock):
-        with patch('common.require_post_variable', new=throws(ValueError)):
-            response, status = ex.export('blah')
-        self.assertEqual(status, 400)
-
     def test_pushes_transformed_dataset_to_repo(self, mock_push: MagicMock):
         ex.export('blah')
         mock_push.assert_called_once_with('data.txt', 'new dataset name')
 
     def test_returns_empty_table_on_success(self, mock_push: MagicMock):
-        response, status = ex.export('blah')
-        self.assertEqual(status, 200)
-        self.assertIn('"columns":', response)
-        self.assertIn('"data":', response)
+        response = ex.export('blah')
+        self.assertIn('columns', response)
+        self.assertIn('data', response)
