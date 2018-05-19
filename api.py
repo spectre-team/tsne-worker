@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import os
-from typing import Tuple
 
 import flask
 from flask_json import as_json, FlaskJSON, JsonError
@@ -28,21 +27,28 @@ json = FlaskJSON(app)
 app.config['JSON_ADD_STATUS'] = False
 app.config['JSON_USE_ENCODE_METHODS'] = True
 
-Response = Tuple[str, int]
-
 
 @app.route('/schema/<string:endpoint>/<string:task_name>/')
-def schema(endpoint: str, task_name: str) -> Response:
+@as_json
+def schema(endpoint: str, task_name: str):
     """Get static schema description"""
     path = os.path.join('.', 'schema', endpoint, task_name + '.json')
-    return unchanged_file(path)
+    try:
+        return unchanged_file(path)
+    except FileNotFoundError:
+        raise JsonError(description='Unknown task: ' + task_name, status_=404)
 
 
 @app.route('/layout/<string:endpoint>/<string:task_name>/')
-def layout(endpoint: str, task_name: str) -> Response:
+@as_json
+def layout(endpoint: str, task_name: str):
     """Get dynamic layout description"""
     path = os.path.join('.', 'layout', endpoint, task_name + '.json')
-    return file_with_datasets_substitution(path)
+    try:
+        return file_with_datasets_substitution(path)
+    except FileNotFoundError:
+        raise JsonError(description='Unknown task: ' + task_name, status_=404)
+
 
 
 @app.route('/results/<string:task_name>/')

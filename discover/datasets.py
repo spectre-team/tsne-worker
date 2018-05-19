@@ -21,8 +21,6 @@ from typing import Callable, Dict, Optional
 
 from spdata.discover import get_datasets
 
-from common import Response, NOT_FOUND
-
 
 def substitute_tags(tag_map: Dict[str, str], text: str) -> str:
     """Substitute tags from the text for corresponding values in the map"""
@@ -44,17 +42,17 @@ def datasets_substitutor() -> Substitutor:
 SubstitutorFactory = Callable[[], Substitutor]
 
 
-def file_from_disk(substitutor_factory: SubstitutorFactory, path: str) -> Response:
+def file_from_disk(substitutor_factory: SubstitutorFactory, path: str) -> str:
     """Read file from disk with subsitutions and return it as HTTP response"""
     if not os.path.exists(path):
-        return NOT_FOUND
+        raise FileNotFoundError(path)
     with open(path) as disk_file:
         content = disk_file.read()
     if substitutor_factory is None:
-        return content, 200
+        return content
     substitutor = substitutor_factory()
     substituted = substitutor(content)
-    return substituted, 200
+    return substituted
 
 
 file_with_datasets_substitution = partial(file_from_disk, datasets_substitutor)

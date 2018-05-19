@@ -100,16 +100,15 @@ class TestSubstituteTags(unittest.TestCase):
 @patch('builtins.open', new=mock_open(read_data="\"blah\""))
 class TestFileFromDisk(unittest.TestCase):
     def test_returns_file_content_as_a_response(self):
-        content, code = discover.datasets.file_from_disk(None, "some_path")
+        content = discover.datasets.file_from_disk(None, "some_path")
         self.assertEqual("\"blah\"", content)
-        self.assertEqual(code, 200)
 
-    def test_returns_404_for_nonexistent(self):
-        with patch('os.path.exists', return_value=False):
-            _, code = discover.datasets.file_from_disk(None, "some_path")
-        self.assertEqual(code, 404)
+    def test_throws_for_nonexistent(self):
+        with patch('os.path.exists', return_value=False), self.assertRaises(
+                FileNotFoundError):
+            discover.datasets.file_from_disk(None, "some_path")
 
     def test_performs_substitution_if_specified(self):
         factory = lambda: partial(discover.datasets.substitute_tags, {"blah": "wololo"})
-        content, _ = discover.datasets.file_from_disk(factory, "some_path")
+        content = discover.datasets.file_from_disk(factory, "some_path")
         self.assertEqual(content, "wololo")
