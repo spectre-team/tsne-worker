@@ -17,12 +17,16 @@ limitations under the License.
 import os
 
 import flask
+from flask_json import as_json, FlaskJSON, JsonError
 
 import aspect
 from common import Response
 from discover import file_with_datasets_substitution, unchanged_file, find_analysis_results
 
 app = flask.Flask(__name__)
+json = FlaskJSON(app)
+app.config['JSON_ADD_STATUS'] = False
+app.config['JSON_USE_ENCODE_METHODS'] = True
 
 
 @app.route('/schema/<string:endpoint>/<string:task_name>/')
@@ -40,18 +44,18 @@ def layout(endpoint: str, task_name: str) -> Response:
 
 
 @app.route('/results/<string:task_name>/')
-def results(task_name: str) -> Response:
+@as_json
+def results(task_name: str):
     "Get list of available results"
-    return flask.jsonify([
-        result._asdict() for result in find_analysis_results(task_name)
-    ]), 200
+    return [result._asdict() for result in find_analysis_results(task_name)]
 
 
 @app.route('/results/<string:task_name>/<string:analysis_id>/<string:aspect_name>/', methods=['POST'])
-def analysis_aspect(task_name: str, analysis_id: str, aspect_name: str) -> Response:
+@as_json
+def analysis_aspect(task_name: str, analysis_id: str, aspect_name: str):
     "Get aspect result"
     try:
         aspect_builder = getattr(aspect, aspect_name)
     except AttributeError:
-        return "Unknown aspect: " + aspect_name, 404
+        raise JsonError(description="Unknown aspect: " + aspect_name, status_=404)
     return aspect_builder(analysis_id)
