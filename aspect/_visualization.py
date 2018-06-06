@@ -20,7 +20,6 @@ import os
 
 from sklearn.externals import joblib
 
-import common
 import discover.analyses as da
 from plotting import as_scatter_plot
 
@@ -28,12 +27,9 @@ from plotting import as_scatter_plot
 find_root = partial(da.find_analysis_by_id, 'tSNE')
 
 
-def visualization(analysis_id: str) -> common.Response:
-    try:
-        analysis_root = find_root(analysis_id)
-    except ValueError:  # unknown ID
-        return common.NOT_FOUND
+def visualization(analysis_id: str):
+    analysis_root = find_root(analysis_id)
     result_path = os.path.join(analysis_root, 'result.pkl')
     result = joblib.load(result_path)
     plot = as_scatter_plot(result)
-    return str(plot), 200
+    return plot

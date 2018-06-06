@@ -10,5 +10,27 @@
             "default": false
         },
         "output_type": "plot"
+    },
+    {
+        "aspect": "export",
+        "friendly_name": "Export",
+        "description": "Exports transformed dataset as a new one",
+        "query_format":
+        {
+            "type": "object",
+            "title": "Name of new dataset",
+            "properties":
+            {
+                "target_name":
+                {
+                    "title": "Target name",
+                    "description": "New dataset name should consist of letters (a-z), ciphers and hyphens",
+                    "type": "string",
+                    "required": true,
+                    "pattern": "^[a-zA-Z0-9_ -]+$"
+                }
+            }
+        },
+        "output_type": "table"
     }
 ]

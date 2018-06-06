@@ -23,6 +23,7 @@ from sklearn.externals import joblib
 
 from spdata.reader import load_dataset
 
+import data_utils
 from spectre_analyses.celery import app
 from spectre_analyses.helpers import open_analysis, status_notifier, dump_configuration
 
@@ -49,3 +50,6 @@ def tSNE(self, analysis_name: str, dataset_name: str, **kwargs):
         result_path = os.path.join(tmp_path, 'result')
         joblib.dump(result, result_path + '.pkl')
         np.savetxt(result_path + '.csv', result)
+        normalized = data_utils.as_normalized(result, data.coordinates, data.labels)
+        dataset_path = os.path.join(tmp_path, 'data.txt')
+        data_utils.dumps_txt(dataset_path, normalized)
